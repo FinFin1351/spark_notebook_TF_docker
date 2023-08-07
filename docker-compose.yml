@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  spark-master:
+    image: apache/spark-py
+    command: /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master
+    networks:
+      - recommend_network
+    ports:
+      - "7077:7077"
+      - "8080:8080"
+
+  jupyter-notebook:
+    image: jupyter/base-notebook
+    networks:
+      - recommend_network
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./requirements.txt:/tmp/requirements.txt
+      - ~/jupyter/:/home/jovyan/work
+
+  voila:
+    image: voila-dashboards/voila  # 请确保这是正确的Voilà Docker镜像名称
+    networks:
+      - recommend_network
+    ports:
+      - "8866:8866"  # Voilà默认的端口可能是8866，但请检查官方文档以确认
+    volumes:
+      - ~/jupyter/:/home/jovyan/work
+
+  tensorflow:
+    image: tensorflow/tensorflow:latest  # 使用TensorFlow的最新版本
+    networks:
+      - recommend_network
+    ports:
+      - "6006:6006"  # TensorBoard的默认端口
+    volumes:
+      # - ~/jupyter/:/tf/notebooks  # 如果你想在TensorFlow容器中使用Jupyter notebooks
+
+networks:
+  recommend_network:
+    driver: bridge

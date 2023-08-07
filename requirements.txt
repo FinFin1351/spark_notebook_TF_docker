@@ -1,0 +1,6 @@
+numpy
+pandas
+redis
+pyspark
+neo4j
+psycopg2
